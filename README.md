@@ -234,10 +234,26 @@ curl -X POST "localhost:5601/api/detection_engine/rules/_import" \
 
 ## 📚 References
 
+### MITRE ATT&CK Framework
 - [MITRE ATT&CK: Brute Force (T1110)](https://attack.mitre.org/techniques/T1110/)
 - [MITRE ATT&CK: Remote Services (T1021)](https://attack.mitre.org/techniques/T1021/)
 - [MITRE ATT&CK: Valid Accounts (T1078)](https://attack.mitre.org/techniques/T1078/)
-- [Windows Security Event IDs](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/)
+- [MITRE ATT&CK: Domain Accounts (T1078.002)](https://attack.mitre.org/techniques/T1078/002/)
+
+### Windows Security Events
+- [Event 4625 - Failed Logon](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4625)
+- [Event 4624 - Successful Logon](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4624)
+- [Event 4672 - Special Privileges Assigned](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4672)
+
+### SIEM Documentation
+- [Splunk Security Essentials](https://splunkbase.splunk.com/app/3435/)
+- [Elastic Security Detection Rules](https://www.elastic.co/guide/en/security/current/detection-engine-overview.html)
+- [SANS Windows Security Log Encyclopedia](https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/)
+
+### Incident Response
+- [NIST SP 800-61: Computer Security Incident Handling Guide](https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final)
+- [SANS Incident Handler's Handbook](https://www.sans.org/white-papers/33901/)
+
 
 ---
 
