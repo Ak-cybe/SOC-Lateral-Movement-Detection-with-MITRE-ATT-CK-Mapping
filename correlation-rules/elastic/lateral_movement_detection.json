@@ -1,0 +1,134 @@
+{
+    "name": "Lateral Movement Detection - Multi-Host Authentication",
+    "description": "Detects same user authenticating to 3+ internal hosts within 10 minutes from same source, indicating lateral movement. Maps to MITRE ATT&CK T1021 (Remote Services).",
+    "risk_score": 73,
+    "severity": "high",
+    "type": "threshold",
+    "query": "event.code:\"4624\" and winlog.logon.type:(\"Network\" or \"RemoteInteractive\") and not user.name:(*$ or *svc* or *service*)",
+    "language": "kuery",
+    "index": [
+        "winlogbeat-*",
+        "logs-windows.*"
+    ],
+    "filters": [
+        {
+            "query": {
+                "bool": {
+                    "must_not": [
+                        {
+                            "terms": {
+                                "source.ip": [
+                                    "10.0.0.100",
+                                    "10.0.0.101"
+                                ]
+                            }
+                        },
+                        {
+                            "terms": {
+                                "user.name": [
+                                    "SYSTEM",
+                                    "LOCAL SERVICE",
+                                    "NETWORK SERVICE"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "from": "now-15m",
+    "interval": "10m",
+    "max_signals": 50,
+    "threshold": {
+        "field": [
+            "user.name",
+            "source.ip"
+        ],
+        "value": 1,
+        "cardinality": [
+            {
+                "field": "host.name",
+                "value": 3
+            }
+        ]
+    },
+    "threat": [
+        {
+            "framework": "MITRE ATT&CK",
+            "tactic": {
+                "id": "TA0008",
+                "name": "Lateral Movement",
+                "reference": "https://attack.mitre.org/tactics/TA0008/"
+            },
+            "technique": [
+                {
+                    "id": "T1021",
+                    "name": "Remote Services",
+                    "reference": "https://attack.mitre.org/techniques/T1021/",
+                    "subtechnique": [
+                        {
+                            "id": "T1021.001",
+                            "name": "Remote Desktop Protocol",
+                            "reference": "https://attack.mitre.org/techniques/T1021/001/"
+                        },
+                        {
+                            "id": "T1021.002",
+                            "name": "SMB/Windows Admin Shares",
+                            "reference": "https://attack.mitre.org/techniques/T1021/002/"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "rule_id": "soc-lateral-movement-001",
+    "version": 1,
+    "author": [
+        "SOC Team"
+    ],
+    "license": "MIT",
+    "tags": [
+        "Lateral Movement",
+        "Multi-Host Auth",
+        "Windows Security",
+        "T1021",
+        "Internal Reconnaissance"
+    ],
+    "references": [
+        "https://attack.mitre.org/techniques/T1021/",
+        "https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4624"
+    ],
+    "note": "This rule detects rapid authentication across multiple internal hosts. Exclude known admin jump servers and IT automation accounts. Cumulative risk scoring: Each additional host adds +10 to risk score.",
+    "false_positives": [
+        "IT administrators performing legitimate multi-host maintenance",
+        "Patch deployment activities",
+        "Automated inventory or monitoring tools"
+    ],
+    "investigation_guide": "## Investigation Steps\n1. Identify all target hosts accessed\n2. Verify user's normal access patterns\n3. Check for data exfiltration indicators\n4. Review process execution on target hosts\n5. Assess containment scope (isolate source and targets)",
+    "related_integrations": [
+        {
+            "package": "windows",
+            "version": "^1.0.0"
+        }
+    ],
+    "required_fields": [
+        {
+            "name": "event.code",
+            "type": "keyword"
+        },
+        {
+            "name": "user.name",
+            "type": "keyword"
+        },
+        {
+            "name": "source.ip",
+            "type": "ip"
+        },
+        {
+            "name": "host.name",
+            "type": "keyword"
+        }
+    ],
+    "setup": "## Setup\nEnsure Windows Security logs are being forwarded via Winlogbeat or Elastic Agent. Configure the exclusion filters to include your organization's jump servers and service accounts to reduce false positives."
+}

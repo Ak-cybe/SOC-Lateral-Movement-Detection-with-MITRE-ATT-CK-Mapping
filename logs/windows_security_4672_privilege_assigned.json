@@ -1,0 +1,63 @@
+[
+    {
+        "timestamp": "2025-12-28T14:31:06.000Z",
+        "EventCode": 4672,
+        "EventType": "Audit Success",
+        "Keywords": "Audit Success",
+        "Computer": "DC01.corp.local",
+        "SubjectUserSid": "S-1-5-21-1234567890-1234567890-1234567890-1001",
+        "SubjectUserName": "admin.service",
+        "SubjectDomainName": "CORP",
+        "SubjectLogonId": "0x1a2b3c4d",
+        "PrivilegeList": [
+            "SeSecurityPrivilege",
+            "SeBackupPrivilege",
+            "SeRestorePrivilege",
+            "SeTakeOwnershipPrivilege",
+            "SeDebugPrivilege",
+            "SeSystemEnvironmentPrivilege",
+            "SeLoadDriverPrivilege",
+            "SeImpersonatePrivilege",
+            "SeDelegateSessionUserImpersonatePrivilege",
+            "SeEnableDelegationPrivilege"
+        ],
+        "message": "Special privileges assigned to new logon. [High-Privilege Logon on Domain Controller]"
+    },
+    {
+        "timestamp": "2025-12-28T14:40:56.000Z",
+        "EventCode": 4672,
+        "EventType": "Audit Success",
+        "Keywords": "Audit Success",
+        "Computer": "SRV-FILE01.corp.local",
+        "SubjectUserSid": "S-1-5-21-1234567890-1234567890-1234567890-1001",
+        "SubjectUserName": "admin.service",
+        "SubjectDomainName": "CORP",
+        "SubjectLogonId": "0x5e6f7081",
+        "PrivilegeList": [
+            "SeSecurityPrivilege",
+            "SeBackupPrivilege",
+            "SeRestorePrivilege",
+            "SeTakeOwnershipPrivilege"
+        ],
+        "message": "Special privileges assigned to new logon. [High-Privilege Logon on File Server]"
+    },
+    {
+        "timestamp": "2025-12-28T14:42:31.000Z",
+        "EventCode": 4672,
+        "EventType": "Audit Success",
+        "Keywords": "Audit Success",
+        "Computer": "SRV-DB01.corp.local",
+        "SubjectUserSid": "S-1-5-21-1234567890-1234567890-1234567890-1001",
+        "SubjectUserName": "admin.service",
+        "SubjectDomainName": "CORP",
+        "SubjectLogonId": "0x6f708192",
+        "PrivilegeList": [
+            "SeSecurityPrivilege",
+            "SeBackupPrivilege",
+            "SeRestorePrivilege",
+            "SeTakeOwnershipPrivilege",
+            "SeDebugPrivilege"
+        ],
+        "message": "Special privileges assigned to new logon. [High-Privilege Logon on Database Server - CRITICAL]"
+    }
+]

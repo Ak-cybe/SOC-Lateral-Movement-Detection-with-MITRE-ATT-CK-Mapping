@@ -1,0 +1,223 @@
+{
+    "attack_scenario": {
+        "name": "Brute Force to Lateral Movement Kill Chain",
+        "description": "Complete attack timeline simulating credential brute force, success, lateral movement, and privilege abuse",
+        "mitre_techniques": [
+            "T1110",
+            "T1078",
+            "T1021",
+            "T1078.002"
+        ],
+        "severity": "CRITICAL",
+        "total_duration_minutes": 12
+    },
+    "timeline": [
+        {
+            "stage": 1,
+            "stage_name": "Reconnaissance & Brute Force",
+            "mitre_technique": "T1110 - Brute Force",
+            "start_time": "2025-12-28T14:30:01.000Z",
+            "end_time": "2025-12-28T14:30:54.000Z",
+            "duration_seconds": 53,
+            "events": [
+                {
+                    "timestamp": "2025-12-28T14:30:01.000Z",
+                    "EventCode": 4625,
+                    "target": "DC01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Failed"
+                },
+                {
+                    "timestamp": "2025-12-28T14:30:03.000Z",
+                    "EventCode": 4625,
+                    "target": "DC01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Failed"
+                },
+                {
+                    "timestamp": "2025-12-28T14:30:05.000Z",
+                    "EventCode": 4625,
+                    "target": "DC01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Failed"
+                },
+                {
+                    "timestamp": "2025-12-28T14:30:08.000Z",
+                    "EventCode": 4625,
+                    "target": "DC01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Failed"
+                },
+                {
+                    "timestamp": "2025-12-28T14:30:10.000Z",
+                    "EventCode": 4625,
+                    "target": "DC01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Failed"
+                },
+                {
+                    "timestamp": "2025-12-28T14:30:54.000Z",
+                    "EventCode": 4625,
+                    "target": "DC01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Failed",
+                    "note": "Last of 20 failed attempts"
+                }
+            ],
+            "summary": "20 failed login attempts in 53 seconds from 192.168.1.105 targeting admin.service"
+        },
+        {
+            "stage": 2,
+            "stage_name": "Credential Compromise",
+            "mitre_technique": "T1078 - Valid Accounts",
+            "start_time": "2025-12-28T14:31:05.000Z",
+            "end_time": "2025-12-28T14:31:06.000Z",
+            "duration_seconds": 1,
+            "events": [
+                {
+                    "timestamp": "2025-12-28T14:31:05.000Z",
+                    "EventCode": 4624,
+                    "target": "DC01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Success",
+                    "logon_type": 3
+                },
+                {
+                    "timestamp": "2025-12-28T14:31:06.000Z",
+                    "EventCode": 4672,
+                    "target": "DC01.corp.local",
+                    "account": "admin.service",
+                    "privileges": "SeSecurityPrivilege, SeBackupPrivilege, SeDebugPrivilege..."
+                }
+            ],
+            "summary": "Successful login 11 seconds after brute force + high privileges assigned"
+        },
+        {
+            "stage": 3,
+            "stage_name": "Lateral Movement",
+            "mitre_technique": "T1021 - Remote Services",
+            "start_time": "2025-12-28T14:35:12.000Z",
+            "end_time": "2025-12-28T14:38:22.000Z",
+            "duration_seconds": 190,
+            "events": [
+                {
+                    "timestamp": "2025-12-28T14:35:12.000Z",
+                    "EventCode": 4624,
+                    "target": "WKS001.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Success"
+                },
+                {
+                    "timestamp": "2025-12-28T14:36:45.000Z",
+                    "EventCode": 4624,
+                    "target": "WKS002.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Success"
+                },
+                {
+                    "timestamp": "2025-12-28T14:38:22.000Z",
+                    "EventCode": 4624,
+                    "target": "WKS003.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Success"
+                }
+            ],
+            "summary": "3 internal workstations accessed within 3 minutes from same source IP"
+        },
+        {
+            "stage": 4,
+            "stage_name": "Critical Asset Access & Privilege Abuse",
+            "mitre_technique": "T1078.002 - Domain Accounts",
+            "start_time": "2025-12-28T14:40:55.000Z",
+            "end_time": "2025-12-28T14:42:31.000Z",
+            "duration_seconds": 96,
+            "events": [
+                {
+                    "timestamp": "2025-12-28T14:40:55.000Z",
+                    "EventCode": 4624,
+                    "target": "SRV-FILE01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Success"
+                },
+                {
+                    "timestamp": "2025-12-28T14:40:56.000Z",
+                    "EventCode": 4672,
+                    "target": "SRV-FILE01.corp.local",
+                    "account": "admin.service",
+                    "privileges": "SeSecurityPrivilege, SeBackupPrivilege..."
+                },
+                {
+                    "timestamp": "2025-12-28T14:42:30.000Z",
+                    "EventCode": 4624,
+                    "target": "SRV-DB01.corp.local",
+                    "account": "admin.service",
+                    "source_ip": "192.168.1.105",
+                    "status": "Success"
+                },
+                {
+                    "timestamp": "2025-12-28T14:42:31.000Z",
+                    "EventCode": 4672,
+                    "target": "SRV-DB01.corp.local",
+                    "account": "admin.service",
+                    "privileges": "SeSecurityPrivilege, SeDebugPrivilege..."
+                }
+            ],
+            "summary": "High-value servers (File & Database) accessed with elevated privileges"
+        }
+    ],
+    "attack_summary": {
+        "attacker_ip": "192.168.1.105",
+        "attacker_hostname": "ATTACKER-PC",
+        "compromised_account": "CORP\\admin.service",
+        "total_failed_logins": 20,
+        "total_successful_logins": 6,
+        "hosts_accessed": [
+            "DC01.corp.local",
+            "WKS001.corp.local",
+            "WKS002.corp.local",
+            "WKS003.corp.local",
+            "SRV-FILE01.corp.local",
+            "SRV-DB01.corp.local"
+        ],
+        "critical_assets_compromised": [
+            "SRV-FILE01.corp.local",
+            "SRV-DB01.corp.local"
+        ],
+        "attack_start": "2025-12-28T14:30:01.000Z",
+        "attack_end": "2025-12-28T14:42:31.000Z",
+        "total_duration_minutes": 12.5
+    },
+    "detection_opportunities": [
+        {
+            "stage": 1,
+            "rule": "brute_force_detection.spl",
+            "trigger_condition": ">5 failed logins in 5min"
+        },
+        {
+            "stage": 2,
+            "rule": "successful_login_after_bruteforce.spl",
+            "trigger_condition": "Success within 10min after brute force"
+        },
+        {
+            "stage": 3,
+            "rule": "lateral_movement_detection.spl",
+            "trigger_condition": "≥3 hosts in 10min from same source"
+        },
+        {
+            "stage": 4,
+            "rule": "kill_chain_alert.spl",
+            "trigger_condition": "Full chain detected - CRITICAL alert"
+        }
+    ]
+}

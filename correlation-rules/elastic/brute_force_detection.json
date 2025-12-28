@@ -1,0 +1,77 @@
+{
+  "name": "Brute Force Detection",
+  "description": "Detects multiple failed login attempts indicating brute force attack. Maps to MITRE ATT&CK T1110 (Brute Force).",
+  "risk_score": 47,
+  "severity": "medium",
+  "type": "query",
+  "query": "event.code:\"4625\" and winlog.logon.type:\"Network\"",
+  "language": "kuery",
+  "index": ["winlogbeat-*", "logs-windows.*"],
+  "filters": [],
+  "from": "now-5m",
+  "interval": "5m",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1110",
+          "name": "Brute Force",
+          "reference": "https://attack.mitre.org/techniques/T1110/",
+          "subtechnique": [
+            {
+              "id": "T1110.001",
+              "name": "Password Guessing",
+              "reference": "https://attack.mitre.org/techniques/T1110/001/"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "threshold": {
+    "field": ["source.ip", "user.name"],
+    "value": 5,
+    "cardinality": [
+      {
+        "field": "host.name",
+        "value": 1
+      }
+    ]
+  },
+  "rule_id": "soc-brute-force-001",
+  "version": 1,
+  "author": ["SOC Team"],
+  "license": "MIT",
+  "tags": [
+    "Brute Force",
+    "Windows Security",
+    "Credential Access",
+    "T1110"
+  ],
+  "references": [
+    "https://attack.mitre.org/techniques/T1110/",
+    "https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625"
+  ],
+  "note": "This rule triggers when 5+ failed login attempts are detected from the same source IP within 5 minutes. Investigate source IP reputation and account lockout status.",
+  "false_positives": [
+    "Legitimate password reset attempts",
+    "Misconfigured service accounts",
+    "Users with forgotten passwords"
+  ],
+  "actions": [
+    {
+      "action_type_id": ".slack",
+      "group": "default",
+      "params": {
+        "message": "Brute Force Alert: {{context.rule.name}} - User: {{context.signals.user.name}} - Source: {{context.signals.source.ip}}"
+      }
+    }
+  ]
+}

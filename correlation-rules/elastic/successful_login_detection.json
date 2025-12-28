@@ -1,0 +1,80 @@
+{
+    "name": "Successful Login After Brute Force",
+    "description": "Detects successful authentication following brute force pattern, indicating credential compromise. Maps to MITRE ATT&CK T1078 (Valid Accounts).",
+    "risk_score": 73,
+    "severity": "high",
+    "type": "eql",
+    "query": "sequence by user.name, source.ip with maxspan=10m [authentication where event.code == \"4625\" and event.outcome == \"failure\"] with runs=5 [authentication where event.code == \"4624\" and event.outcome == \"success\"]",
+    "language": "eql",
+    "index": [
+        "winlogbeat-*",
+        "logs-windows.*"
+    ],
+    "filters": [],
+    "from": "now-15m",
+    "interval": "5m",
+    "max_signals": 50,
+    "threat": [
+        {
+            "framework": "MITRE ATT&CK",
+            "tactic": {
+                "id": "TA0001",
+                "name": "Initial Access",
+                "reference": "https://attack.mitre.org/tactics/TA0001/"
+            },
+            "technique": [
+                {
+                    "id": "T1078",
+                    "name": "Valid Accounts",
+                    "reference": "https://attack.mitre.org/techniques/T1078/"
+                }
+            ]
+        },
+        {
+            "framework": "MITRE ATT&CK",
+            "tactic": {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "reference": "https://attack.mitre.org/tactics/TA0006/"
+            },
+            "technique": [
+                {
+                    "id": "T1110",
+                    "name": "Brute Force",
+                    "reference": "https://attack.mitre.org/techniques/T1110/"
+                }
+            ]
+        }
+    ],
+    "rule_id": "soc-credential-compromise-001",
+    "version": 1,
+    "author": [
+        "SOC Team"
+    ],
+    "license": "MIT",
+    "tags": [
+        "Credential Compromise",
+        "Brute Force Success",
+        "Windows Security",
+        "T1078",
+        "T1110"
+    ],
+    "references": [
+        "https://attack.mitre.org/techniques/T1078/",
+        "https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4624"
+    ],
+    "note": "CRITICAL: This indicates potential credential compromise. Immediate investigation required. Verify if the successful login was legitimate. Consider temporary account disable and password reset.",
+    "false_positives": [
+        "User successfully remembering password after multiple attempts",
+        "Password reset completion"
+    ],
+    "building_block_type": null,
+    "investigation_guide": "## Investigation Steps\n1. Verify source IP reputation\n2. Check if user reported the login\n3. Review subsequent activity from compromised account\n4. Check for lateral movement patterns\n5. Assess need for containment",
+    "risk_score_mapping": [
+        {
+            "field": "event.risk_score",
+            "operator": "equals",
+            "value": ""
+        }
+    ]
+}
