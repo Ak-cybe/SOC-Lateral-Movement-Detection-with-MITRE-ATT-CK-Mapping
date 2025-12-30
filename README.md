@@ -1,119 +1,144 @@
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=30&duration=3000&pause=1000&color=336699&center=true&vCenter=true&multiline=false&width=800&height=70&lines=SOC+Lateral+Movement+Detection+Suite" alt="Project Title" />
-</p>
+<div align="center">
 
-<p align="center">
-    <a href="https://github.com/Ak-cybe/SOC-Lateral-Movement-Detection/actions"><img src="https://img.shields.io/badge/Build-Passing-success?style=for-the-badge&logo=github" alt="Build Status"/></a>
-    <a href="https://attack.mitre.org/"><img src="https://img.shields.io/badge/MITRE%20ATT%26CK-Mapped-red?style=for-the-badge&logo=target" alt="MITRE"/></a>
-    <a href="#"><img src="https://img.shields.io/badge/SIEM-Splunk%20%7C%20Elastic-blue?style=for-the-badge&logo=splunk" alt="SIEM"/></a>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-grey?style=for-the-badge" alt="License"/></a>
-</p>
+  ![Banner](https://capsule-render.vercel.app/api?type=waving&color=0:FF0000,100:330000&height=180&section=header&text=SOC%20Lateral%20Movement&fontSize=50&fontColor=ffffff&fontAlignY=35&desc=Enterprise%20Defense%20Suite%20%7C%20Splunk%20%2B%20Elastic&descAlignY=60&descSize=20&animation=fadeIn)
 
----
+  <br />
 
-## 🛡️ Project Overview
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&pause=1000&color=F71E36&center=true&vCenter=true&width=600&lines=Detect+Brute+Force+Attacks;Stop+Lateral+Movement;Hunt+Privilege+Escalation;Map+to+MITRE+ATT%26CK" alt="Typing SVG" />
 
-**SOC Lateral Movement Detection** is a production-ready detection engineering suite designed to identify the complete attack lifecycle—from initial access (Brute Force/Spray) to internal propagation (Lateral Movement) and privilege abuse.
+  <br />
 
-Unlike standard "alert-only" repositories, this project provides a **full operational ecosystem**:
-*   **Correlation Rules:** Optimized SPL and Elastic KQL queries.
-*   **Validation:** Python-based attack replay scripts for regression testing.
-*   **Operations:** Severity scoring matrices, troubleshooting guides, and playbook integration.
-*   **Telemetry:** Ready-to-deploy Sysmon and Audit Policy configurations.
+  [![MITRE](https://img.shields.io/badge/MITRE%20ATT%26CK-T1110%20%7C%20T1021-red?style=for-the-badge&logo=target)](https://attack.mitre.org/)
+  [![Splunk](https://img.shields.io/badge/Splunk-SPL-green?style=for-the-badge&logo=splunk)](https://splunk.com)
+  [![Elastic](https://img.shields.io/badge/Elastic-KQL-blue?style=for-the-badge&logo=elastic)](https://elastic.co)
+  [![Build](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge&logo=github)](https://github.com/)
+
+</div>
 
 ---
 
-## ⚡ Attack Chain Architecture
+## ⚡ Project Overview
 
-This project maps detections to a realistic kill chain. The architecture relies on log correlation across time windows to reduce false positives.
+**Stop attackers before they own your domain.**
+
+This project is a **battle-tested detection capability** designed to identify the critical path of an intrusion: **Brute Force → Lateral Movement → Privilege Abuse**. relying on standard Windows logs, it builds a resilient detection mesh that identifies attacks even when they use legitimate tools like `psexec` or `RDP`.
+
+> **💥 Why this matters:** Most SOCs only alert on "Failed Logins". This project connects the dots—alerting only when a user fails 20 times *and then* successfully hops to a critical server.
+
+---
+
+## 💀 Kill Chain Architecture
+
+We track the adversary at every step of the movement phase.
 
 ```mermaid
 graph LR
-    subgraph "Phase 1: Initial Access"
-        A[🔴 Brute Force] -->|Event 4625| B[Detection Rule]
-        A2[🟠 Password Spray] -->|Event 4625| B
-    end
-    
-    subgraph "Phase 2: Compromise"
-        B -->|Event 4624| C[Context: Login Success]
-    end
-    
-    subgraph "Phase 3: Propagation"
-        C -->|Event 4624/Sysmon| D[🔵 Lateral Movement]
-    end
-    
-    subgraph "Phase 4: Impact"
-        D -->|Event 4672| E[🟣 Privilege Abuse]
-    end
+    A[🔓 Brute Force] -->|Phase 1| B[✅ Credential Access]
+    B -->|Phase 2| C[🔀 Lateral Movement]
+    C -->|Phase 3| D[👑 Domain Dominance]
 
-    style A fill:#ff4d4d,stroke:#333,stroke-width:2px,color:#fff
-    style A2 fill:#ff9933,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#3366cc,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#9933cc,stroke:#333,stroke-width:2px,color:#fff
+    style A fill:#a80000,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#e67e22,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#f1c40f,stroke:#333,stroke-width:2px,color:#000
+    style D fill:#27ae60,stroke:#333,stroke-width:2px,color:#fff
 ```
 
-**[View Full Data Flow Architecture](docs/architecture.md)**
+### 🎯 Detection Coverage
+
+| Tactic | Technique | Detection Logic | Severity |
+|:--- |:--- |:--- |:---|
+| **Credential Access** | **Password Spraying** | `Uniques > 10` & `Fails < 50` | 🟠 High |
+| **Credential Access** | **Brute Force** | `Events > 5` in 5 mins + GeoIP | 🔴 Critical |
+| **Lateral Movement** | **Remote Services** | `Hosts ≥ 3` via RDP/WinRM/SMB | 🔴 Critical |
+| **Privilege Escalation** | **Valid Accounts** | Admin login + Anomalous Context | 🟡 Medium |
+
+*Full mapping available in [MITRE Mapping Docs](investigation-playbook/mitre_attack_mapping.md).*
 
 ---
 
-## 🎯 Detection Capabilities
+## 🛠️ Deployment & Usage
 
-| Attack Stage | MITRE Technique | Detection Logic | Operational Impact |
-|:--- |:--- |:--- |:--- |
-| **Password Spraying** | **T1110.003** | `Unique Users > 10` & `Failures < 50` | Detects "Low & Slow" attacks that bypass lockouts. |
-| **Brute Force** | **T1110.001** | `Failed > 5` in 5 mins + GeoIP | Detects targeted flooding attacks. |
-| **Lateral Movement** | **T1021** (RDP/SMB) | `Distinct Hosts ≥ 3` in 10 mins | Identifies workstation-to-workstation hopping. |
-| **Privilege Abuse** | **T1078.002** | 4672 + Context (Geo/Time) | Contextualizes admin usage (excludes BAU activity). |
+### 1. ⚙️ Prerequisites (Don't skip this)
+Your detections are only as good as your logs. Apply these configs first:
+*   📜 **[Windows Audit Policy](configs/windows_audit_policy.xml)** (Enable Logon/Logoff)
+*   📜 **[Sysmon Configuration](configs/sysmon_config.xml)** (Targeting Lateral Movement Ports 445, 3389, 5985)
 
----
+### 2. 🛡️ Deploy Rules
+Populate the `lookups/` CSVs with your safe IPs, then:
+*   **Splunk:** Copy `correlation-rules/splunk/*.spl` to your Search Head.
+*   **Elastic:** Import `correlation-rules/elastic/*.json` to Kibana.
 
-## 🚀 Quick Start in 5 Minutes
+### 3. 🧪 Validate (Attack Simulation)
+Don't guess. Test. Run the Python replay script to fire 50+ malicious logs into your SIEM and verify the alert triggers.
 
-### 1. Prerequisites
-Ensure your environment is sending the right data:
-*   [Windows Audit Policy](configs/windows_audit_policy.xml) (Enable Logon/Logoff)
-*   [Sysmon Config](configs/sysmon_config.xml) (Targeting ports 3389, 445, 5985)
-
-### 2. Configuration
-Populate the allowlists to prevent false positives:
 ```bash
-# Add authorized Jump Servers
-echo "10.0.1.50,JUMP-BOX-01" >> lookups/admin_jump_servers.csv
-```
-
-### 3. Deployment
-*   **Splunk:** Import `correlation-rules/splunk/*.spl` into your App.
-*   **Elastic:** Import `correlation-rules/elastic/*.json` via Saved Objects.
-
-### 4. Validation
-Run the attack simulator to verify rules trigger correctly:
-```bash
-# Simulates full kill chain logs sent to your SIEM
+# Simulates a full attack scenario from Brute Force to Admin Access
 python scripts/replay_attack_scenario.py
 ```
-*See [Validation Guide](docs/validation_guide.md) for detailed instructions.*
 
 ---
 
-## 📚 Documentation Suite
+## 📂 Repository Structure
 
-| Document | Purpose | Audience |
-|:--- |:--- |:--- |
-| **[Architecture](docs/architecture.md)** | Data flow diagrams and component breakdown | Architects |
-| **[Severity Matrix](docs/severity_matrix.md)** | Math-based logic for Alert Prioritization | SOC Lead |
-| **[Troubleshooting](docs/troubleshooting.md)** | Solutions for "Rule not firing" or "Too noisy" | Analysts |
-| **[Project Roadmap](ROADMAP.md)** | Future enhancements and current status | Managers |
-| **[Postmortem](docs/POSTMORTEM.md)** | Analysis of project evolution and lessons learned | Everyone |
-
----
-
-## ⚠️ Scope & Disclaimers
-> [!NOTE]
-> *   **Privilege Escalation (T1068):** This project focuses on *credential abuse* (T1078), not vulnerability exploitation.
-> *   **EventID 4672:** We use this for *context*, never as a standalone alert, to avoid admin-login noise.
+```tree
+SOC-Lateral-Movement-Detection/
+├── 📁 correlation-rules/   # The Brains (SPL & KQL)
+├── 📁 configs/             # The Eyes (Sysmon & Audit)
+├── 📁 docs/                # The Manuals (Architecture & Triage)
+├── 📁 lookups/             # The Allow-lists
+├── 📁 scripts/             # The Test Tools
+└── 📄 README.md            # You are here
+```
 
 ---
 
+## 📚 Analyst Resources
+
+*   **[Architecture Diagram](docs/architecture.md)** - How the data flows.
+*   **[Severity Matrix](docs/severity_matrix.md)** - How we calculate Risk Scores.
+*   **[Troubleshooting](docs/troubleshooting.md)** - Rule not firing? Check here.
+*   **[Postmortem Report](docs/POSTMORTEM.md)** - Lessons learned from building this.
+
+---
+
+## 📸 Usage Gallery
+
+### 1. Brute Force Alert (Splunk)
 <p align="center">
-    <i>Engineered with <3 for the Blue Team Community</i>
+  <img src="screenshots/brute_force_alert.png" alt="Brute Force Alert" width="90%"/>
 </p>
+<i>Splunk alert showing 20+ failed login attempts.</i>
+
+### 2. Attack Path Visualization
+<p align="center">
+  <img src="screenshots/lateral_movement_attack_path.png" alt="Lateral Movement Attack Path" width="90%"/>
+</p>
+
+### 3. Elastic SIEM Dashboard
+<p align="center">
+  <img src="screenshots/elastic_dashboard.png" alt="Elastic Dashboard" width="90%"/>
+</p>
+
+---
+
+## 📚 References & Credits
+
+### Core Frameworks
+*   [MITRE ATT&CK: T1110 (Brute Force)](https://attack.mitre.org/techniques/T1110/)
+*   [MITRE ATT&CK: T1021 (Remote Services)](https://attack.mitre.org/techniques/T1021/)
+*   [MITRE ATT&CK: T1078 (Valid Accounts)](https://attack.mitre.org/techniques/T1078/)
+
+### Documentation
+*   [Microsoft Event ID 4625](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4625)
+*   [Splunk Security Essentials](https://splunkbase.splunk.com/app/3435/)
+*   [Elastic Detection Rules](https://www.elastic.co/guide/en/security/current/detection-engine-overview.html)
+
+---
+
+<div align="center">
+
+**[ Report Bug ](https://github.com/Ak-cybe/SOC-Lateral-Movement-Detection/issues)** • **[ Request Feature ](https://github.com/Ak-cybe/SOC-Lateral-Movement-Detection/pulls)**
+
+<img src="https://img.shields.io/github/stars/Ak-cybe/SOC-Lateral-Movement-Detection?style=social" alt="Stars"/>
+
+</div>
