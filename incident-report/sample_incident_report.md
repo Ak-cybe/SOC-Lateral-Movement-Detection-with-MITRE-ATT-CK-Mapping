@@ -7,8 +7,8 @@
 | Field | Value |
 |-------|-------|
 | **Incident ID** | INC-2024-00472 |
-| **Date/Time Detected** | 2025-12-28 14:30:01 UTC |
-| **Date/Time Reported** | 2025-12-28 14:35:00 UTC |
+| **Date/Time Detected** | 2024-12-28 14:30:01 UTC |
+| **Date/Time Reported** | 2024-12-28 14:35:00 UTC |
 | **Incident Handler** | Sarah Chen, SOC Analyst |
 | **Status** | Contained |
 | **Priority** | **CRITICAL** |
@@ -163,10 +163,10 @@ The **admin.service** account was configured with a weak password that was susce
 
 | Evidence Type | Location | Hash (SHA256) | Collected By | Date |
 |---------------|----------|---------------|--------------|------|
-| Memory Dump | \\forensics\INC-2024-00472\ATTACKER-PC.mem | 3a7f8c9d... | IR Team | 2025-12-28 |
-| Event Logs (DC01) | \\forensics\INC-2024-00472\DC01_Security.evtx | b2e5f4a1... | SOC Team | 2025-12-28 |
-| Event Logs (SRV-DB01) | \\forensics\INC-2024-00472\SRV-DB01_Security.evtx | c8d2e1b3... | SOC Team | 2025-12-28 |
-| Network Capture | \\forensics\INC-2024-00472\traffic.pcap | 9f1a2b3c... | Network Team | 2025-12-28 |
+| Memory Dump | \\forensics\INC-2024-00472\ATTACKER-PC.mem | 3a7f8c9d... | IR Team | 2024-12-28 |
+| Event Logs (DC01) | \\forensics\INC-2024-00472\DC01_Security.evtx | b2e5f4a1... | SOC Team | 2024-12-28 |
+| Event Logs (SRV-DB01) | \\forensics\INC-2024-00472\SRV-DB01_Security.evtx | c8d2e1b3... | SOC Team | 2024-12-28 |
+| Network Capture | \\forensics\INC-2024-00472\traffic.pcap | 9f1a2b3c... | Network Team | 2024-12-28 |
 
 ---
 

@@ -1,0 +1,32 @@
+<Sysmon schemaversion="4.82">
+  <HashAlgorithms>*</HashAlgorithms>
+  <CheckRevocation />
+  
+  <EventFiltering>
+    <!-- Event ID 1: Process Creation -->
+    <ProcessCreate onmatch="include">
+       <!-- Detect Lateral Movement Tools -->
+       <Image condition="end with">psexec.exe</Image>
+       <Image condition="end with">psexec64.exe</Image>
+       <Image condition="end with">wsmprovhost.exe</Image> <!-- WinRM -->
+       <Image condition="end with">mstsc.exe</Image>       <!-- RDP -->
+       <CommandLine condition="contains">Invoke-Command</CommandLine>
+    </ProcessCreate>
+
+    <!-- Event ID 3: Network Connection -->
+    <NetworkConnect onmatch="include">
+      <!-- Detect Lateral Movement Ports -->
+      <DestinationPort condition="is">3389</DestinationPort> <!-- RDP -->
+      <DestinationPort condition="is">445</DestinationPort>  <!-- SMB/RPC -->
+      <DestinationPort condition="is">5985</DestinationPort> <!-- WinRM HTTP -->
+      <DestinationPort condition="is">5986</DestinationPort> <!-- WinRM HTTPS -->
+      <DestinationPort condition="is">22</DestinationPort>   <!-- SSH -->
+    </NetworkConnect>
+
+    <!-- Event ID 10: Process Access -->
+    <ProcessAccess onmatch="include">
+      <TargetImage condition="end with">lsass.exe</TargetImage> <!-- Credential Dumping -->
+    </ProcessAccess>
+    
+  </EventFiltering>
+</Sysmon>

@@ -101,12 +101,12 @@ This document maps the detection rules to MITRE ATT&CK techniques and provides c
 | Attribute | Details |
 |-----------|---------|
 | **Detection Source** | Windows Security Event Log |
-| **Event ID** | 4672 (Special Privileges Assigned) |
-| **Key Fields** | SubjectUserName, PrivilegeList |
+| **Event ID** | 4672 (High Privileges) + 4624 (Network Logon) |
+| **Key Fields** | Account_Name, Source_Network_Address, Login_Time |
 | **Detection Rule** | `kill_chain_alert.spl` |
-| **Context** | High-privilege logon following lateral movement |
+| **Context** | Domain account usage from unexpected GeoIP or during off-hours |
 
-**Note**: This is NOT privilege escalation via exploitation (T1068). EventID 4672 indicates administrative privilege assignment, which maps to privilege abuse under T1078.
+**Note**: EventIDE 4672 alone is NOT a T1078.002 indicator (it occurs on every admin logon). Valid T1078.002 requires context: unexpected location, off-hours usage, or abnormal access pattern.
 
 **MITRE Reference**: https://attack.mitre.org/techniques/T1078/002/
 

@@ -1,13 +1,33 @@
 {
-  "name": "Brute Force Detection",
-  "description": "Detects multiple failed login attempts indicating brute force attack. Maps to MITRE ATT&CK T1110 (Brute Force).",
+  "name": "Brute Force Detection (Enriched)",
+  "description": "Detects multiple failed login attempts indicating brute force attack. Enriched with GeoIP, User Baseline, and VPN validation. Maps to MITRE ATT&CK T1110.",
   "risk_score": 47,
   "severity": "medium",
   "type": "query",
-  "query": "event.code:\"4625\" and winlog.logon.type:\"Network\"",
+  "query": "event.code:\"4625\" and winlog.logon.type:\"Network\" and not source.geo.country_name:(\"TrustedCountry1\" or \"TrustedCountry2\") and not source.ip_address in (VPN_EXIT_NODES) and not user.name in (SERVICE_ACCOUNTS)",
   "language": "kuery",
-  "index": ["winlogbeat-*", "logs-windows.*"],
-  "filters": [],
+  "index": [
+    "winlogbeat-*",
+    "logs-windows.*"
+  ],
+  "filters": [
+    {
+      "meta": {
+        "desc": "Exclude known VPN Exit Nodes"
+      },
+      "query": {
+        "bool": {
+          "must_not": {
+            "terms": {
+              "source.ip": [
+                "vpn-list-placeholder"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
   "from": "now-5m",
   "interval": "5m",
   "max_signals": 100,
@@ -36,7 +56,10 @@
     }
   ],
   "threshold": {
-    "field": ["source.ip", "user.name"],
+    "field": [
+      "source.ip",
+      "user.name"
+    ],
     "value": 5,
     "cardinality": [
       {
@@ -46,20 +69,23 @@
     ]
   },
   "rule_id": "soc-brute-force-001",
-  "version": 1,
-  "author": ["SOC Team"],
+  "version": 2,
+  "author": [
+    "SOC Team"
+  ],
   "license": "MIT",
   "tags": [
     "Brute Force",
     "Windows Security",
     "Credential Access",
-    "T1110"
+    "T1110",
+    "Enriched"
   ],
   "references": [
     "https://attack.mitre.org/techniques/T1110/",
     "https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625"
   ],
-  "note": "This rule triggers when 5+ failed login attempts are detected from the same source IP within 5 minutes. Investigate source IP reputation and account lockout status.",
+  "note": "Required Enrichments: 1. GeoIP Pipeline (add source.geo). 2. User Baseline (ML job or timeline check). 3. VPN Exclusion list. \n\nLogic: Triggers on 5+ failed logins from non-trusted GeoIPs and non-VPN sources.",
   "false_positives": [
     "Legitimate password reset attempts",
     "Misconfigured service accounts",
@@ -70,7 +96,15 @@
       "action_type_id": ".slack",
       "group": "default",
       "params": {
-        "message": "Brute Force Alert: {{context.rule.name}} - User: {{context.signals.user.name}} - Source: {{context.signals.source.ip}}"
+        "message": "Brute Force Alert: {{context.rule.name}} - User: {{context.signals.user.name}} - Source: {{context.signals.source.ip}} - Geo: {{context.signals.source.geo.country_name}}"
+      }
+    },
+    {
+      "action_type_id": ".webhook",
+      "params": {
+        "method": "POST",
+        "url": "https://soar.corp.local/api/cases",
+        "body": "{\"title\": \"Brute Force Alert\", \"severity\": \"high\", \"playbook\": \"brute_force_playbook\", \"source_ip\": \"{{context.signals.source.ip}}\", \"user\": \"{{context.signals.user.name}}\"}"
       }
     }
   ]

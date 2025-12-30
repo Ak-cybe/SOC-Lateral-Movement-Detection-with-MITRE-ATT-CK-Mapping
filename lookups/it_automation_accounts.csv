@@ -1,0 +1,5 @@
+account_name,tool,description
+ansible_svc,Ansible,Automation Account
+jenkins_build,Jenkins,Build Server
+terraform_svc,Terraform,IaC Account
+scanner_svc,Nessus,Vulnerability Scanner

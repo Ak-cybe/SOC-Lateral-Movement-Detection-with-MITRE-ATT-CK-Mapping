@@ -1,0 +1,24 @@
+{
+    "brute_force_detection": {
+        "expected_alerts": 1,
+        "expected_severity": "Critical",
+        "expected_fields": {
+            "failed_attempts": 20,
+            "source_ip": "192.168.1.105",
+            "account": "admin.service"
+        }
+    },
+    "lateral_movement_detection": {
+        "expected_alerts": 1,
+        "expected_fields": {
+            "distinct_hosts": 6,
+            "lateral_targets": [
+                "WKS001",
+                "WKS002",
+                "WKS003",
+                "SRV-FILE01",
+                "SRV-DB01"
+            ]
+        }
+    }
+}

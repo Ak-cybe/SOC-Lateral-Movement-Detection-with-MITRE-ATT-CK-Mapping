@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<CONFIG>
+  <!-- Windows Audit Policy Configuration Recommendation -->
+  <!-- Target: Domain Controllers and Member Servers -->
+  
+  <AuditPolicy>
+    <!-- Logon/Logoff Category -->
+    <Subcategory name="Logon" id="{0CCE9215-69AE-11D9-BED3-505054503030}">
+       <Success>Enable</Success>
+       <Failure>Enable</Failure>
+       <Note>Required for Event ID 4624 (Success) and 4625 (Failure)</Note>
+    </Subcategory>
+    <Subcategory name="Special Logon" id="{0CCE9216-69AE-11D9-BED3-505054503030}">
+       <Success>Enable</Success>
+       <Failure>Enable</Failure>
+       <Note>Required for Event ID 4672 (Admin Login)</Note>
+    </Subcategory>
+    
+    <!-- Account Management Category -->
+    <Subcategory name="User Account Management" id="{0CCE9235-69AE-11D9-BED3-505054503030}">
+       <Success>Enable</Success>
+       <Failure>Enable</Failure>
+       <Note>Required for Account Lockouts (4740)</Note>
+    </Subcategory>
+
+    <!-- Process Tracking (If Sysmon Unavailable) -->
+    <Subcategory name="Process Creation" id="{0CCE922B-69AE-11D9-BED3-505054503030}">
+       <Success>Enable</Success>
+       <Failure>Disable</Failure>
+       <Note>Required for Event ID 4688 (Process Execution)</Note>
+    </Subcategory>
+  </AuditPolicy>
+  
+  <!-- Command Line Implementation -->
+  <!-- Run automatically via GPO or Script:
+       auditpol /set /subcategory:"Logon" /success:enable /failure:enable
+       auditpol /set /subcategory:"Special Logon" /success:enable /failure:enable
+       auditpol /set /subcategory:"User Account Management" /success:enable /failure:enable
+       auditpol /set /subcategory:"Process Creation" /success:enable /failure:disable
+  -->
+</CONFIG>

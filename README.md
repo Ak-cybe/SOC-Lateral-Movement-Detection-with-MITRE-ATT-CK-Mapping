@@ -1,52 +1,58 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff0000,50:ff6b6b,100:4d96ff&height=200&section=header&text=SOC%20DETECT&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Multi-Stage%20Brute%20Force%20%2B%20Lateral%20Movement%20Detection&descAlignY=55&descSize=20" width="100%"/>
-</p>
-
-<p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&duration=3000&pause=1000&color=FF6B6B&center=true&vCenter=true&multiline=true&repeat=true&width=800&height=100&lines=%F0%9F%9B%A1%EF%B8%8F+Enterprise+SIEM+Correlation+Rules;%F0%9F%94%93+Brute+Force+%E2%86%92+Lateral+Movement+%E2%86%92+Privilege+Abuse;%F0%9F%8E%AF+MITRE+ATT%26CK+T1110+%7C+T1021+%7C+T1078" alt="Typing SVG" />
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/MITRE%20ATT%26CK-T1110%20|%20T1021%20|%20T1078-ff0000?style=for-the-badge&logo=target&logoColor=white" alt="MITRE"/>
-  <img src="https://img.shields.io/badge/Splunk-SPL-00C853?style=for-the-badge&logo=splunk&logoColor=white" alt="Splunk"/>
-  <img src="https://img.shields.io/badge/Elastic-SIEM-005571?style=for-the-badge&logo=elastic&logoColor=white" alt="Elastic"/>
-  <img src="https://img.shields.io/badge/Windows-Security%20Logs-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows"/>
-</p>
+# SOC Lateral Movement Detection
 
-<p align="center">
-  <img src="https://img.shields.io/github/stars/Ak-cybe/SOC-Lateral-Movement-Detection?style=social" alt="Stars"/>
-  <img src="https://img.shields.io/github/forks/Ak-cybe/SOC-Lateral-Movement-Detection?style=social" alt="Forks"/>
-  <img src="https://img.shields.io/github/license/Ak-cybe/SOC-Lateral-Movement-Detection?color=blue" alt="License"/>
-  <img src="https://komarev.com/ghpvc/?username=Ak-cybe&label=Profile%20Views&color=ff6b6b&style=flat" alt="Views"/>
-</p>
+**Multi-stage attack detection for Splunk and Elastic SIEM.**  
+Detects Brute Force, Password Spraying, Lateral Movement (RDP/WinRM), and Contextual Privilege Abuse.
+
+---
+
+## 🚀 Quick Start (5 Minutes)
+
+1.  **Prerequisites:**
+    -   Enable [Windows Audit Policy](configs/windows_audit_policy.xml).
+    -   Install [Sysmon Config](configs/sysmon_config.xml).
+2.  **Deploy Lookups:**
+    -   Populate `lookups/` CSV files with your environment's safe IPs/Accounts.
+3.  **Deploy Rules:**
+    -   Copy `correlation-rules/splunk/*.spl` to your Splunk App.
+    -   Or import `correlation-rules/elastic/*.json` to Kibana.
+4.  **Validate:**
+    -   Run `python scripts/replay_attack_scenario.py` to test.
+
+Use the [Validation Guide](docs/validation_guide.md) for full steps.
+
+---
+
+## 📚 Documentation
+-   **[Architecture & Data Flow](docs/architecture.md)**
+-   **[Troubleshooting Guide](docs/troubleshooting.md)**
+-   **[Severity Scoring Matrix](docs/severity_matrix.md)**
+-   **[Log Forwarding Guide](docs/log_forwarding_guide.md)**
 
 ---
 
 ## 🎯 About This Project
 
-<img align="right" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjRxY2VqNWF5NzJnN2I5aHFnOTVsMnlvbDVmZGptN2R5MnNpOXFnaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif" width="300"/>
-
 This project implements **multi-stage attack detection** using SIEM correlation rules. It detects the complete attack chain from initial brute force attempts through credential compromise to lateral movement across internal systems.
 
 > [!IMPORTANT]
-> This project detects **privilege abuse via administrative logons**, not vulnerability-based privilege escalation. EventID 4672 indicates high-privilege logon assignment, not exploitation.
+> This project detects **privilege abuse via administrative logons**, not vulnerability-based privilege escalation. 
+> *   **Scope:** Events focused on valid credential misuse (T1078).
+> *   **Out of Scope:** Exploitation for Privilege Escalation (T1068) is NOT detected by this project.
+> *   **Note:** EventID 4672 indicates high-privilege logon assignment and is used for context, not as a standalone alert for exploitation.
 
 ### 🔥 Detection Capabilities
 
 | Stage | Event ID | Detection | MITRE Technique |
 |-------|----------|-----------|-----------------|
 | 1️⃣ Brute Force | 4625 | Failed login threshold | T1110 |
-| 2️⃣ Credential Compromise | 4624 | Success after brute force | T1078 |
-| 3️⃣ Lateral Movement | 4624 | Multi-host authentication | T1021 |
-| 4️⃣ Privilege Abuse | 4672 | High-privilege logon | T1078.002 |
-
-### 🔀 Attack Path Visualization
-<p align="center">
-  <img src="screenshots/lateral_movement_attack_path.png" alt="Lateral Movement Attack Path" width="85%"/>
-</p>
-<p align="center"><i>Attack path showing malicious nodes (red), expected behaviors (green), and rare activities (yellow)</i></p>
-
-<br clear="right"/>
+| 2️⃣ Password Spraying | 4625 | Low-volume, multi-account | T1110.003 |
+| 3️⃣ Credential Compromise | 4624 | Success after brute force | T1078 |
+| 4️⃣ Lateral Movement | 4624 | Multi-host authentication | T1021 |
+| 5️⃣ Privilege Abuse | 4672 | High-privilege logon (Context) | T1078.002 |
 
 ---
 
@@ -64,16 +70,7 @@ flowchart LR
     style D fill:#4d96ff,color:#fff
 ```
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="700"/>
-</p>
-
-### 🏗️ SIEM Detection Architecture
-
-<p align="center">
-  <img src="screenshots/siem_kill_chain_flow.png" alt="SIEM Kill Chain Architecture" width="95%"/>
-</p>
-<p align="center"><i>SIEM Kill Chain Flow: Rule-based IDS → Network Monitoring → Anomaly Detection → Alert & Mitigate</i></p>
+For a detailed architecture view, see [Architecture.md](docs/architecture.md).
 
 ---
 
@@ -81,37 +78,18 @@ flowchart LR
 
 ```
 SOC-Lateral-Movement-Detection/
-├── 📁 correlation-rules/
-│   ├── 📁 splunk/
-│   │   ├── brute_force_detection.spl
-│   │   ├── successful_login_after_bruteforce.spl
-│   │   ├── lateral_movement_detection.spl
-│   │   └── kill_chain_alert.spl
-│   └── 📁 elastic/
-│       ├── brute_force_detection.json
-│       ├── successful_login_detection.json
-│       └── lateral_movement_detection.json
-├── 📁 logs/
-│   ├── windows_security_4625_failed_logins.json
-│   ├── windows_security_4624_successful_logins.json
-│   ├── windows_security_4672_privilege_assigned.json
-│   └── attack_scenario_timeline.json
-├── 📁 investigation-playbook/
-│   ├── brute_force_playbook.md
-│   ├── lateral_movement_playbook.md
-│   ├── false_positive_handling.md
-│   └── mitre_attack_mapping.md
-├── 📁 incident-report/
-│   ├── incident_report_template.md
-│   └── sample_incident_report.md
+├── 📁 correlation-rules/   # SPL and JSON rules
+├── 📁 configs/             # Sysmon and Audit policies
+├── 📁 docs/                # Architecture, Troubleshooting, Severities
+├── 📁 lookups/             # CSV Allow lists
+├── 📁 scripts/             # Validation scripts
+├── 📁 tests/               # Expected test outputs
 └── 📄 README.md
 ```
 
 ---
 
-## 🛠️ Detection Logic
-
-<img align="right" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnF5ZnJwcXk2cTh4MHgxdnFpbXo2aDFqOHRhbmRmMG1ocGVrMjBnOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26tn33aiTi1jkl6H6/giphy.gif" width="280"/>
+## 🛠️ Detection Logic Details
 
 ### Brute Force Detection (Splunk SPL)
 ```spl
@@ -128,29 +106,8 @@ index=wineventlog sourcetype=WinEventLog:Security EventCode=4625
 User authenticates to ≥3 distinct internal hosts
 ├── Within 10-minute time window
 ├── From same source IP (non-admin workstation)
-└── Outside normal admin patterns
-    ├── Excluded: Jump servers
-    ├── Excluded: IT automation accounts
-    └── Excluded: Service accounts
+└── Outside normal admin patterns (Lookups excluded)
 ```
-
-<br clear="right"/>
-
----
-
-## 🎭 SOC Analyst Responsibilities Simulated
-
-| Tier | Responsibility | Artifacts |
-|------|----------------|-----------|
-| **Tier-1** | Alert monitoring & triage | Correlation rules |
-| **Tier-2** | Correlation analysis & investigation | Investigation playbooks |
-| **Incident Response** | Documentation & remediation | Incident reports |
-
-### 🔧 Elastic Security - Detection Rules
-<p align="center">
-  <img src="screenshots/elastic_detection_rules.png" alt="Elastic Detection Rules" width="95%"/>
-</p>
-<p align="center"><i>337+ detection rules with risk scoring, severity levels, and continuous monitoring</i></p>
 
 ---
 

@@ -46,8 +46,17 @@ index=wineventlog sourcetype=WinEventLog:Security EventCode=4624
     true(), "Low"
 )
 
-| eval alert_title = "Lateral Movement Detected - Multi-Host Authentication"
-| eval mitre_technique = "T1021 - Remote Services"
+
+| eval sub_technique = case(
+    match(Process_Name, "wsmprovhost"), "T1021.006 - WinRM",
+    Logon_Type="10", "T1021.001 - RDP",
+    match(Process_Name, "psexec"), "T1021.002 - PsExec",
+    Logon_Type="3", "T1021.002 - SMB/Admin Shares",
+    true(), "T1021 - Unknown Remote Service"
+)
+
+| eval alert_title = "Lateral Movement - " . sub_technique
+| eval mitre_technique = sub_technique
 
 | table lateral_window, Account_Name, source_ips, distinct_hosts, 
         target_hosts, total_authentications, movement_speed, 
