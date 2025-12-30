@@ -67,17 +67,25 @@ def main():
         
         events = stage.get('events', [])
         for event in events:
-            # Add current timestamp to make events "live" for SIEMs with strict time windows
-            # Or keep original if testing historical search. 
-            # For this script, we'll keep original but note that SIEM might need adjustment.
+            # Rebase timestamps to "Now" to ensure SIEM real-time rules trigger
+            # Assuming original logs have 'TimeCreated', '@timestamp', or similar fields
+            # We calculate offset from the FIRST event in the timeline to preserve relative spacing
+            
+            if 'TimeCreated' in event:
+                # This is a simplifed rebase assuming 'TimeCreated' is ISO 8601
+                # In a real scenario, you'd parse the first event time once and calculate offset
+                # For this MVP, we just set it to UTC now
+                event['TimeCreated'] = datetime.utcnow().isoformat() + "Z"
             
             if INPUT_TYPE == 'splunk':
                 send_to_splunk(event, SIEM_URL, AUTH_TOKEN)
             elif INPUT_TYPE == 'elastic':
+                # Elastic often needs '@timestamp'
+                event['@timestamp'] = datetime.utcnow().isoformat() + "Z"
                 send_to_elastic(event, SIEM_URL, AUTH_TOKEN)
             
             # Optional: detailed delay simulation
-            # time.sleep(0.1) 
+            time.sleep(0.1) 
 
     print("\nReplay completed.")
 

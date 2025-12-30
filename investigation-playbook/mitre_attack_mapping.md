@@ -100,13 +100,15 @@ This document maps the detection rules to MITRE ATT&CK techniques and provides c
 
 | Attribute | Details |
 |-----------|---------|
+| **Tactics** | **TA0001 (Initial Access)**, **TA0003 (Persistence)**, **TA0004 (PrivEsc)** |
 | **Detection Source** | Windows Security Event Log |
-| **Event ID** | 4672 (High Privileges) + 4624 (Network Logon) |
-| **Key Fields** | Account_Name, Source_Network_Address, Login_Time |
-| **Detection Rule** | `kill_chain_alert.spl` |
-| **Context** | Domain account usage from unexpected GeoIP or during off-hours |
+| **Event ID** | 4672 (High Priv) + 4624 (Net Logon) |
+| **Context Required** | Successful login + (GeoIP anomaly OR off-hours OR post-lateral-movement) |
 
-**Note**: EventIDE 4672 alone is NOT a T1078.002 indicator (it occurs on every admin logon). Valid T1078.002 requires context: unexpected location, off-hours usage, or abnormal access pattern.
+**Note**: EventIDE 4672 alone is NOT a T1078.002 indicator. It maps to multiple tactics depending on *when* it occurs in the kill chain:
+*   **Initial Access:** First malicious login via VPN/OWA.
+*   **Privilege Escalation:** Standard user accessing Admin-only jump server.
+*   **Persistence:** Scheduled task creation using Domain Admin creds.
 
 **MITRE Reference**: https://attack.mitre.org/techniques/T1078/002/
 
