@@ -1,7 +1,8 @@
-`# Brute Force Detection Rule
-# Detects multiple failed login attempts from same source IP
-# MITRE ATT&CK: T1110 (Brute Force), T1110.001 (Password Guessing)
-# Windows Event ID: 4625 (Failed Logon)
+``` Brute Force Detection Rule
+    Detects multiple failed login attempts from same source IP
+    MITRE ATT&CK: T1110 (Brute Force), T1110.001 (Password Guessing)
+    Windows Event ID: 4625 (Failed Logon)
+```
 
 index=wineventlog sourcetype=WinEventLog:Security EventCode=4625
 | bin _time span=5m
@@ -31,8 +32,9 @@ index=wineventlog sourcetype=WinEventLog:Security EventCode=4625
 
 | sort - failed_attempts
 
-`# Alert Settings:
-`# - Run every 5 minutes
-`# - Alert when results > 0
-`# - Severity: Based on failed_attempts count
-`# - Assign to: SOC Tier-1 for triage
+``` Alert Settings:
+    - Run every 5 minutes
+    - Alert when results > 0
+    - Severity: Based on failed_attempts count
+    - Assign to: SOC Tier-1 for triage
+```

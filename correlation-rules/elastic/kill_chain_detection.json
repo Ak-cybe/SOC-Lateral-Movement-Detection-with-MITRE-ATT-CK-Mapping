@@ -1,0 +1,152 @@
+{
+    "name": "Kill Chain Detection - Brute Force to Lateral Movement",
+    "description": "Detects full attack chain: Brute Force → Successful Auth → Lateral Movement → Privilege Escalation. CRITICAL severity. Maps to MITRE ATT&CK T1110, T1078, T1021, T1078.002.",
+    "risk_score": 99,
+    "severity": "critical",
+    "type": "eql",
+    "query": "sequence by winlog.event_data.TargetUserName, source.ip with maxspan=30m\n  [any where event.code == \"4625\"] with runs=5\n  [any where event.code == \"4624\"]\n  [any where event.code == \"4624\" and host.name != null] with runs=2\n  [any where event.code == \"4672\"]",
+    "language": "eql",
+    "index": [
+        "winlogbeat-*",
+        "logs-windows.*"
+    ],
+    "filters": [
+        {
+            "query": {
+                "bool": {
+                    "must_not": [
+                        {
+                            "terms": {
+                                "user.name": [
+                                    "SYSTEM",
+                                    "LOCAL SERVICE",
+                                    "NETWORK SERVICE"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "from": "now-35m",
+    "interval": "15m",
+    "max_signals": 20,
+    "threat": [
+        {
+            "framework": "MITRE ATT&CK",
+            "tactic": {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "reference": "https://attack.mitre.org/tactics/TA0006/"
+            },
+            "technique": [
+                {
+                    "id": "T1110",
+                    "name": "Brute Force",
+                    "reference": "https://attack.mitre.org/techniques/T1110/"
+                }
+            ]
+        },
+        {
+            "framework": "MITRE ATT&CK",
+            "tactic": {
+                "id": "TA0008",
+                "name": "Lateral Movement",
+                "reference": "https://attack.mitre.org/tactics/TA0008/"
+            },
+            "technique": [
+                {
+                    "id": "T1021",
+                    "name": "Remote Services",
+                    "reference": "https://attack.mitre.org/techniques/T1021/"
+                }
+            ]
+        },
+        {
+            "framework": "MITRE ATT&CK",
+            "tactic": {
+                "id": "TA0004",
+                "name": "Privilege Escalation",
+                "reference": "https://attack.mitre.org/tactics/TA0004/"
+            },
+            "technique": [
+                {
+                    "id": "T1078",
+                    "name": "Valid Accounts",
+                    "reference": "https://attack.mitre.org/techniques/T1078/",
+                    "subtechnique": [
+                        {
+                            "id": "T1078.002",
+                            "name": "Domain Accounts",
+                            "reference": "https://attack.mitre.org/techniques/T1078/002/"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "rule_id": "soc-kill-chain-001",
+    "version": 1,
+    "author": [
+        "SOC Team"
+    ],
+    "license": "MIT",
+    "tags": [
+        "Kill Chain",
+        "Brute Force",
+        "Lateral Movement",
+        "Privilege Escalation",
+        "T1110",
+        "T1021",
+        "T1078.002",
+        "Critical"
+    ],
+    "references": [
+        "https://attack.mitre.org/tactics/TA0008/",
+        "https://attack.mitre.org/techniques/T1110/",
+        "https://attack.mitre.org/techniques/T1021/",
+        "https://attack.mitre.org/techniques/T1078/002/"
+    ],
+    "note": "CRITICAL ALERT: This rule detects a complete attack chain from initial brute force through privilege escalation. Immediate investigation and containment required. Sequence: 5+ failed auths → 1 success → 2+ host authentications → privilege assignment.",
+    "false_positives": [
+        "Very unlikely given the sequence requirements",
+        "Possible during red team exercises",
+        "Misconfigured automation accidentally triggering the full sequence"
+    ],
+    "investigation_guide": "## CRITICAL: Immediate Response Required\n\n### Phase 1: Containment (First 15 min)\n1. **Disable the compromised account** immediately\n2. **Isolate source IP** at network level\n3. **Alert IR Team Lead**\n\n### Phase 2: Scoping (15-60 min)\n4. Identify ALL hosts accessed by the account\n5. Check for persistence mechanisms\n6. Preserve forensic evidence\n\n### Phase 3: Eradication\n7. Reset account credentials\n8. Review accessed systems for backdoors\n9. Assess data exposure",
+    "required_fields": [
+        {
+            "name": "event.code",
+            "type": "keyword"
+        },
+        {
+            "name": "event.outcome",
+            "type": "keyword"
+        },
+        {
+            "name": "user.name",
+            "type": "keyword"
+        },
+        {
+            "name": "source.ip",
+            "type": "ip"
+        },
+        {
+            "name": "host.name",
+            "type": "keyword"
+        }
+    ],
+    "setup": "## Setup\nThis is a high-fidelity, low-volume rule. Ensure all Windows Security event types (4624, 4625, 4672) are being forwarded. Consider adding a SOAR webhook action for automated containment.",
+    "actions": [
+        {
+            "action_type_id": ".webhook",
+            "group": "default",
+            "params": {
+                "method": "POST",
+                "url": "https://soar.corp.local/api/cases",
+                "body": "{\"title\": \"CRITICAL: Kill Chain Detected\", \"severity\": \"critical\", \"playbook\": \"kill_chain_response\", \"user\": \"{{context.signals.user.name}}\", \"auto_contain\": true}"
+            }
+        }
+    ]
+}

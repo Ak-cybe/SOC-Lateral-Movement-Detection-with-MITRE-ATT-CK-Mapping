@@ -12,8 +12,8 @@ index=wineventlog sourcetype=WinEventLog:Security (EventCode=4625 OR EventCode=4
 | eventstats dc(eval(EventCode=4624)) as success_count by Account_Name
 | where success_count > 0
 
-# Check for lateral movement (login to 3+ unique hosts, excluding DC)
-| eventstats dc(eval(EventCode=4624 AND host!="DC01")) as lateral_hosts by Account_Name
+# Check for lateral movement (login to 3+ unique hosts, excluding jump servers)
+| eventstats dc(eval(EventCode=4624 AND NOT match(host, "^(DC|JUMP)"))) as lateral_hosts by Account_Name
 | where lateral_hosts >= 3
 
 # Check for Privilege Escalation (Special Privileges 4672)

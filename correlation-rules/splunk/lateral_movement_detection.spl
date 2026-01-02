@@ -1,23 +1,28 @@
-`# Lateral Movement Detection Rule
-`# Detects same user authenticating to multiple internal hosts within short timeframe
-`# MITRE ATT&CK: T1021 (Remote Services)
-`# Windows Event ID: 4624 (Successful Logon)
-`# Indicates: Potential lateral movement / internal reconnaissance
+``` Lateral Movement Detection Rule
+    Detects same user authenticating to multiple internal hosts within short timeframe
+    MITRE ATT&CK: T1021 (Remote Services)
+    Windows Event ID: 4624 (Successful Logon)
+    Indicates: Potential lateral movement / internal reconnaissance
+```
 
-`# Define exclusions for false positive reduction
-`# Customize these for your environment
+``` Define exclusions for false positive reduction
+    Customize these for your environment
+```
 
 index=wineventlog sourcetype=WinEventLog:Security EventCode=4624
 
-`# Filter out known admin patterns
-| search NOT [| inputlookup admin_jump_servers.csv | fields ComputerName]
-| search NOT [| inputlookup service_accounts.csv | fields Account_Name]
-| search NOT [| inputlookup it_automation_accounts.csv | fields Account_Name]
+``` Filter out known admin patterns (using lookup tables) ```
+| search NOT [| inputlookup admin_jump_servers.csv | rename ip AS Source_Network_Address | fields Source_Network_Address]
+| search NOT [| inputlookup service_accounts.csv | rename account_name AS Account_Name | fields Account_Name]
+| search NOT [| inputlookup it_automation_accounts.csv | rename account_name AS Account_Name | fields Account_Name]
 
-`# Focus on interactive and network logons (Type 2, 3, 10)
-| where Logon_Type IN ("2", "3", "10")
+``` Filter out machine accounts (ending in $) and service account prefixes using regex ```
+| where NOT match(Account_Name, "(?i)^(svc\.|svc_|svc-|.*\$$|SYSTEM|NETWORK SERVICE|LOCAL SERVICE)")
 
-`# Time window: 10 minutes
+``` Focus on interactive and network logons (Type 2, 3, 10) ```
+| where Logon_Type IN (2, 3, 10)
+
+``` Time window: 10 minutes ```
 | bin _time span=10m as lateral_window
 
 | stats 
@@ -29,10 +34,10 @@ index=wineventlog sourcetype=WinEventLog:Security EventCode=4624
     values(Source_Network_Address) as source_ips
     by Account_Name, lateral_window
 
-`# Lateral movement threshold: 3+ distinct hosts
+``` Lateral movement threshold: 3+ distinct hosts ```
 | where distinct_hosts >= 3
 
-`# Validate: Same source IP (not distributed admin activity)
+``` Validate: Same source IP (not distributed admin activity) ```
 | eval source_ip_count = mvcount(source_ips)
 | where source_ip_count == 1
 
@@ -49,9 +54,9 @@ index=wineventlog sourcetype=WinEventLog:Security EventCode=4624
 
 | eval sub_technique = case(
     match(Process_Name, "wsmprovhost"), "T1021.006 - WinRM",
-    Logon_Type="10", "T1021.001 - RDP",
+    Logon_Type=10, "T1021.001 - RDP",
     match(Process_Name, "psexec"), "T1021.002 - PsExec",
-    Logon_Type="3", "T1021.002 - SMB/Admin Shares",
+    Logon_Type=3, "T1021.002 - SMB/Admin Shares",
     true(), "T1021 - Unknown Remote Service"
 )
 
@@ -64,9 +69,10 @@ index=wineventlog sourcetype=WinEventLog:Security EventCode=4624
 
 | sort - distinct_hosts
 
-`# Alert Settings:
-`# - Run every 10 minutes
-`# - Alert when results > 0
-`# - Severity: Based on distinct_hosts count
-`# - Assign to: SOC Tier-2 for investigation
-`# - Action: Consider host isolation if Critical
+``` Alert Settings:
+    - Run every 10 minutes
+    - Alert when results > 0
+    - Severity: Based on distinct_hosts count
+    - Assign to: SOC Tier-2 for investigation
+    - Action: Consider host isolation if Critical
+```

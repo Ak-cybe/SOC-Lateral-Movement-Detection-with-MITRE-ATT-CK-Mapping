@@ -12,13 +12,13 @@
 
 ---
 
-## � Alert Enrichment (Auto-populated)
+## 🔗 Alert Enrichment (Auto-populated)
 
 - **Alert Field: `source.ip`** → Matches **Playbook Step 2** (IP Reputation Check)
 - **Alert Field: `user.name`** → Matches **Playbook Step 3** (Account Privilege Check)
 - **Alert Field: `failed_attempts`** → Logic: If >20, treat as **Immediate Escalation**
 
-## �🚨 Alert Trigger Criteria
+## 🚨 Alert Trigger Criteria
 
 - **Primary**: >5 failed login attempts (EventCode 4625) in 5 minutes from same source IP
 - **Escalation**: >10 attempts = High, >20 attempts = Critical

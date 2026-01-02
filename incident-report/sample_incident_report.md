@@ -196,9 +196,9 @@ The **admin.service** account was configured with a weak password that was susce
 
 | Role | Name | Signature | Date |
 |------|------|-----------|------|
-| SOC Analyst | Sarah Chen | _________ | 2025-12-28 |
-| SOC Manager | Michael Rodriguez | _________ | 2025-12-28 |
-| CISO | Jennifer Walsh | _________ | 2025-12-28 |
+| SOC Analyst | Sarah Chen | _________ | 2024-12-28 |
+| SOC Manager | Michael Rodriguez | _________ | 2024-12-28 |
+| CISO | Jennifer Walsh | _________ | 2024-12-28 |
 
 ---
 

@@ -1,0 +1,21 @@
+{
+    "ignorePatterns": [
+        {
+            "pattern": "^https://soar.corp.local"
+        },
+        {
+            "pattern": "^http://localhost"
+        },
+        {
+            "pattern": "^http://192.168"
+        }
+    ],
+    "aliveStatusCodes": [
+        200,
+        206,
+        301,
+        302,
+        403,
+        404
+    ]
+}

@@ -4,7 +4,7 @@
   "risk_score": 47,
   "severity": "medium",
   "type": "query",
-  "query": "event.code:\"4625\" and winlog.logon.type:\"Network\" and not source.geo.country_name:(\"TrustedCountry1\" or \"TrustedCountry2\") and not source.ip_address in (VPN_EXIT_NODES) and not user.name in (SERVICE_ACCOUNTS)",
+  "query": "event.code:\"4625\" and winlog.logon.type:\"Network\" and not user.name:(svc* or *$ or SYSTEM or \"NETWORK SERVICE\" or \"LOCAL SERVICE\")",
   "language": "kuery",
   "index": [
     "winlogbeat-*",

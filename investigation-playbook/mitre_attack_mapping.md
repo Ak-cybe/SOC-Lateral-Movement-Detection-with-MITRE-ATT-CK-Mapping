@@ -12,13 +12,14 @@ This document maps the detection rules to MITRE ATT&CK techniques and provides c
 
 | Technique ID | Technique Name | Tactic | Detection Rule | Confidence |
 |-------------|----------------|--------|----------------|------------|
-| T1110 | Brute Force | Credential Access | `brute_force_detection.spl` | High |
-| T1110.001 | Password Guessing | Credential Access | `brute_force_detection.spl` | High |
-| T1078 | Valid Accounts | Initial Access / Persistence | `successful_login_after_bruteforce.spl` | High |
-| T1021 | Remote Services | Lateral Movement | `lateral_movement_detection.spl` | Medium |
-| T1021.001 | Remote Desktop Protocol | Lateral Movement | `lateral_movement_detection.spl` | Medium |
-| T1021.002 | SMB/Windows Admin Shares | Lateral Movement | `lateral_movement_detection.spl` | Medium |
-| T1078.002 | Domain Accounts | Privilege Escalation | `kill_chain_alert.spl` | High |
+| T1110 | Brute Force | Credential Access | `brute_force_detection.spl` / `brute_force_detection.json` | High |
+| T1110.001 | Password Guessing | Credential Access | `brute_force_detection.spl` / `brute_force_detection.json` | High |
+| T1110.003 | Password Spraying | Credential Access | `password_spraying.spl` / `password_spraying_detection.json` | High |
+| T1078 | Valid Accounts | Initial Access / Persistence | `successful_login_after_bruteforce.spl` / `successful_login_detection.json` | High |
+| T1021 | Remote Services | Lateral Movement | `lateral_movement_detection.spl` / `lateral_movement_detection.json` | Medium |
+| T1021.001 | Remote Desktop Protocol | Lateral Movement | `lateral_movement_detection.spl` / `lateral_movement_detection.json` | Medium |
+| T1021.002 | SMB/Windows Admin Shares | Lateral Movement | `lateral_movement_detection.spl` / `lateral_movement_detection.json` | Medium |
+| T1078.002 | Domain Accounts | Privilege Escalation | `kill_chain_alert.spl` / `kill_chain_detection.json` | High |
 
 ---
 

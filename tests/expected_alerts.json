@@ -4,12 +4,23 @@
         "expected_severity": "Critical",
         "expected_fields": {
             "failed_attempts": 20,
-            "source_ip": "192.168.1.105",
-            "account": "admin.service"
+            "source_ip": "192.168.1.100",
+            "account": "admin.service",
+            "target_host": "DC01"
+        }
+    },
+    "successful_login_after_bruteforce": {
+        "expected_alerts": 1,
+        "expected_severity": "High",
+        "expected_fields": {
+            "source_ip": "192.168.1.100",
+            "account": "admin.service",
+            "time_to_compromise_minutes": "<1"
         }
     },
     "lateral_movement_detection": {
         "expected_alerts": 1,
+        "expected_severity": "High",
         "expected_fields": {
             "distinct_hosts": 6,
             "lateral_targets": [
@@ -17,8 +28,30 @@
                 "WKS002",
                 "WKS003",
                 "SRV-FILE01",
-                "SRV-DB01"
-            ]
+                "SRV-DB01",
+                "SRV-WEB01"
+            ],
+            "source_ip": "192.168.1.100",
+            "account": "admin.service"
         }
+    },
+    "kill_chain_detection": {
+        "expected_alerts": 1,
+        "expected_severity": "Critical",
+        "expected_fields": {
+            "account": "admin.service",
+            "mitre_techniques": [
+                "T1110",
+                "T1078",
+                "T1021",
+                "T1078.002"
+            ],
+            "brute_force_count": 20,
+            "lateral_hosts_count": 6
+        }
+    },
+    "password_spraying_detection": {
+        "expected_alerts": 0,
+        "notes": "Password spraying targets MANY accounts with FEW attempts each. This scenario targets ONE account with MANY attempts (brute force pattern, not spray)."
     }
 }

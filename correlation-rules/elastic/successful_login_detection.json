@@ -4,7 +4,7 @@
     "risk_score": 73,
     "severity": "high",
     "type": "eql",
-    "query": "sequence by user.name, source.ip with maxspan=10m [authentication where event.code == \"4625\" and event.outcome == \"failure\"] with runs=5 [authentication where event.code == \"4624\" and event.outcome == \"success\"]",
+    "query": "sequence by winlog.event_data.TargetUserName, source.ip with maxspan=10m [any where event.code == \"4625\"] with runs=5 [any where event.code == \"4624\"]",
     "language": "eql",
     "index": [
         "winlogbeat-*",

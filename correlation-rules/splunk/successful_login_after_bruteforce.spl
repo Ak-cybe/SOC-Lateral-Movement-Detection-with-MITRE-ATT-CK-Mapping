@@ -1,46 +1,65 @@
-`# Successful Login After Brute Force Detection
-`# Correlation Rule: Detects successful login within 10 minutes after brute force pattern
-`# MITRE ATT&CK: T1078 (Valid Accounts)
-`# Windows Event IDs: 4625 (Failed) -> 4624 (Success)
-`# Indicates: Potential credential compromise
+``` Successful Login After Brute Force Detection (Optimized)
+    Correlation Rule: Detects successful login within 10 minutes after brute force pattern
+    MITRE ATT&CK: T1078 (Valid Accounts)
+    Windows Event IDs: 4625 (Failed) -> 4624 (Success)
+    Indicates: Potential credential compromise
+    
+    OPTIMIZATION: Uses eventstats instead of join for better performance on large datasets
+```
 
-`# Step 1: Get brute force candidates (>5 failed logins in 5min)
-index=wineventlog sourcetype=WinEventLog:Security EventCode=4625
-| bin _time span=5m as brute_window
-| stats count as failed_count by Account_Name, Source_Network_Address, brute_window
+index=wineventlog sourcetype=WinEventLog:Security (EventCode=4625 OR EventCode=4624)
+| bin _time span=10m as correlation_window
+
+``` Calculate brute force attempts per account/source in window ```
+| eventstats 
+    count(eval(EventCode=4625)) as failed_count 
+    earliest(eval(if(EventCode=4625, _time, null()))) as first_failure
+    latest(eval(if(EventCode=4625, _time, null()))) as last_failure
+    by Account_Name, Source_Network_Address, correlation_window
+
+``` Filter to only accounts with brute force pattern (>5 failures) ```
 | where failed_count > 5
-| rename brute_window as attack_window
-| eval bruteforce_detected = 1
 
-`# Step 2: Join with successful logins within 10 minutes
-| join type=inner Account_Name Source_Network_Address 
-    [search index=wineventlog sourcetype=WinEventLog:Security EventCode=4624
-    | bin _time span=10m as success_window
-    | rename success_window as login_time
-    | stats earliest(_time) as successful_login_time 
-            values(ComputerName) as compromised_host
-            values(Logon_Type) as logon_type
-            by Account_Name, Source_Network_Address, login_time]
+``` Now look for successful logins after the brute force ```
+| eventstats 
+    count(eval(EventCode=4624)) as success_count
+    earliest(eval(if(EventCode=4624, _time, null()))) as successful_login_time
+    values(eval(if(EventCode=4624, ComputerName, null()))) as compromised_hosts
+    values(eval(if(EventCode=4624, Logon_Type, null()))) as logon_types
+    by Account_Name, Source_Network_Address, correlation_window
 
-`# Step 3: Validate timeline (success after brute force)
-| where successful_login_time > attack_window
+``` Only alert when there IS a successful login after failures ```
+| where success_count > 0 AND successful_login_time > first_failure
 
-| eval time_to_compromise_seconds = successful_login_time - attack_window
+``` Calculate time to compromise ```
+| eval time_to_compromise_seconds = successful_login_time - last_failure
 | eval time_to_compromise_minutes = round(time_to_compromise_seconds / 60, 1)
 
-| eval alert_severity = "High"
+``` Filter to only show the successful login events (avoid duplicate alerts) ```
+| where EventCode=4624
+
+``` Severity based on number of failed attempts ```
+| eval alert_severity = case(
+    failed_count > 50, "Critical",
+    failed_count > 20, "High",
+    failed_count > 10, "Medium",
+    true(), "Low"
+)
+
 | eval alert_title = "Credential Compromise Detected - Success After Brute Force"
 | eval mitre_technique = "T1078 - Valid Accounts"
 
-| table attack_window, successful_login_time, Account_Name, Source_Network_Address,
-        failed_count, compromised_host, logon_type, time_to_compromise_minutes,
+| table _time, Account_Name, Source_Network_Address, failed_count, 
+        compromised_hosts, logon_types, time_to_compromise_minutes,
         alert_severity, mitre_technique
 
-| sort - time_to_compromise_minutes
+| dedup Account_Name, Source_Network_Address, correlation_window
+| sort - failed_count
 
-`# Alert Settings:
-`# - Run every 5 minutes
-`# - Alert when results > 0
-`# - Severity: HIGH (credential compromise indicator)
-`# - Assign to: SOC Tier-2 for investigation
-`# - Trigger: Immediate containment assessment
+``` Alert Settings:
+    - Run every 5 minutes
+    - Alert when results > 0
+    - Severity: Based on failed_count
+    - Assign to: SOC Tier-2 for investigation
+    - Trigger: Immediate containment assessment
+```

@@ -2,78 +2,326 @@
     "timeline": [
         {
             "stage": "Brute Force",
+            "description": "Attacker attempts multiple passwords against admin account",
+            "mitre_technique": "T1110.001",
             "timestamp_start": "2025-12-28T10:00:00Z",
             "events": [
                 {
                     "EventID": 4625,
                     "TimeCreated": "2025-12-28T10:00:01Z",
-                    "Account_Name": "admin",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "DC01"
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:03Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
                 },
                 {
                     "EventID": 4625,
                     "TimeCreated": "2025-12-28T10:00:05Z",
-                    "Account_Name": "admin",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "DC01"
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
                 },
                 {
                     "EventID": 4625,
-                    "TimeCreated": "2025-12-28T10:00:10Z",
-                    "Account_Name": "admin",
+                    "TimeCreated": "2025-12-28T10:00:07Z",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "DC01"
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:09Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:11Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:13Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
                 },
                 {
                     "EventID": 4625,
                     "TimeCreated": "2025-12-28T10:00:15Z",
-                    "Account_Name": "admin",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "DC01"
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
                 },
                 {
                     "EventID": 4625,
-                    "TimeCreated": "2025-12-28T10:00:20Z",
-                    "Account_Name": "admin",
+                    "TimeCreated": "2025-12-28T10:00:17Z",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "DC01"
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:19Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:21Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:23Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
                 },
                 {
                     "EventID": 4625,
                     "TimeCreated": "2025-12-28T10:00:25Z",
-                    "Account_Name": "admin",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "DC01"
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:27Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:29Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:31Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:33Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:35Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:37Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                },
+                {
+                    "EventID": 4625,
+                    "TimeCreated": "2025-12-28T10:00:39Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "Status": "0xc000006d"
+                }
+            ]
+        },
+        {
+            "stage": "Credential Compromise",
+            "description": "Attacker guesses correct password - successful login",
+            "mitre_technique": "T1078",
+            "timestamp_start": "2025-12-28T10:00:45Z",
+            "events": [
+                {
+                    "EventID": 4624,
+                    "TimeCreated": "2025-12-28T10:00:45Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "DC01",
+                    "Logon_Type": "3",
+                    "LogonProcessName": "NtLmSsp"
+                }
+            ]
+        },
+        {
+            "stage": "Privilege Escalation",
+            "description": "Compromised account receives admin privileges",
+            "mitre_technique": "T1078.002",
+            "timestamp_start": "2025-12-28T10:00:46Z",
+            "events": [
+                {
+                    "EventID": 4672,
+                    "TimeCreated": "2025-12-28T10:00:46Z",
+                    "SubjectUserName": "admin.service",
+                    "SubjectDomainName": "CORP",
+                    "PrivilegeList": "SeSecurityPrivilege, SeTakeOwnershipPrivilege, SeDebugPrivilege"
                 }
             ]
         },
         {
             "stage": "Lateral Movement",
-            "timestamp_start": "2025-12-28T10:10:00Z",
+            "description": "Attacker moves laterally to access multiple internal servers",
+            "mitre_technique": "T1021.002",
+            "timestamp_start": "2025-12-28T10:02:00Z",
             "events": [
                 {
                     "EventID": 4624,
-                    "Logon_Type": "3",
-                    "Account_Name": "admin",
+                    "TimeCreated": "2025-12-28T10:02:00Z",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "FILE-SRV"
+                    "ComputerName": "WKS001",
+                    "Logon_Type": "3"
                 },
                 {
                     "EventID": 4624,
-                    "Logon_Type": "3",
-                    "Account_Name": "admin",
+                    "TimeCreated": "2025-12-28T10:02:30Z",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "DB-SRV"
+                    "ComputerName": "WKS002",
+                    "Logon_Type": "3"
                 },
                 {
                     "EventID": 4624,
-                    "Logon_Type": "3",
-                    "Account_Name": "admin",
+                    "TimeCreated": "2025-12-28T10:03:00Z",
+                    "Account_Name": "admin.service",
                     "Source_Network_Address": "192.168.1.100",
-                    "ComputerName": "WEB-SRV"
+                    "ComputerName": "WKS003",
+                    "Logon_Type": "3"
+                },
+                {
+                    "EventID": 4624,
+                    "TimeCreated": "2025-12-28T10:03:30Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "SRV-FILE01",
+                    "Logon_Type": "3"
+                },
+                {
+                    "EventID": 4624,
+                    "TimeCreated": "2025-12-28T10:04:00Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "SRV-DB01",
+                    "Logon_Type": "3"
+                },
+                {
+                    "EventID": 4624,
+                    "TimeCreated": "2025-12-28T10:04:30Z",
+                    "Account_Name": "admin.service",
+                    "Source_Network_Address": "192.168.1.100",
+                    "ComputerName": "SRV-WEB01",
+                    "Logon_Type": "3"
+                }
+            ]
+        },
+        {
+            "stage": "Privilege Abuse on Target",
+            "description": "Attacker gains admin privileges on critical database server",
+            "mitre_technique": "T1078.002",
+            "timestamp_start": "2025-12-28T10:04:01Z",
+            "events": [
+                {
+                    "EventID": 4672,
+                    "TimeCreated": "2025-12-28T10:04:01Z",
+                    "SubjectUserName": "admin.service",
+                    "SubjectDomainName": "CORP",
+                    "ComputerName": "SRV-DB01",
+                    "PrivilegeList": "SeSecurityPrivilege, SeBackupPrivilege, SeRestorePrivilege"
                 }
             ]
         }
-    ]
+    ],
+    "metadata": {
+        "scenario_name": "Full Kill Chain - Brute Force to Lateral Movement",
+        "total_events": 29,
+        "attack_duration_minutes": 4.5,
+        "mitre_techniques_covered": [
+            "T1110.001",
+            "T1078",
+            "T1078.002",
+            "T1021.002"
+        ],
+        "expected_detections": {
+            "brute_force_detection": {
+                "should_fire": true,
+                "expected_severity": "Critical",
+                "reason": "20 failed attempts > 20 threshold"
+            },
+            "successful_login_after_bruteforce": {
+                "should_fire": true,
+                "reason": "4624 success within 10 min of brute force"
+            },
+            "lateral_movement_detection": {
+                "should_fire": true,
+                "expected_severity": "High",
+                "reason": "6 distinct hosts >= 5 threshold"
+            },
+            "kill_chain_detection": {
+                "should_fire": true,
+                "reason": "Full sequence: brute force -> success -> lateral -> privilege"
+            }
+        }
+    }
 }
